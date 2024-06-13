@@ -1,5 +1,3 @@
-#include "Jeu.hpp"
-
 // Programme contenant le projet du TD5.
 // file		main.cpp
 // author	Iliass Khider et Bryan Alexandre Tavares
@@ -26,7 +24,6 @@ int main()
     // les supportent normalement par défaut.
     bibliotheque_cours::activerCouleursAnsi();
 #pragma endregion
-
 
     Jeu game;
     game.jouer();

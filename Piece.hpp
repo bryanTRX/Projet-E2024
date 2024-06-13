@@ -11,6 +11,11 @@ public:
 	Piece() : nom_(""), description_("") {}
 	Piece(const std::string& nom, const std::string& description) : nom_(nom), description_(description) {}
 
+	~Piece()
+	{
+		std::cout << "Destruction of Piece: " << nom_ << std::endl;
+	}
+
 	void setVoisins(const std::string& direction, std::shared_ptr<Piece> voisin)
 	{
 		pieceVoisins_[direction] = voisin;

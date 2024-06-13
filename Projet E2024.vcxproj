@@ -134,6 +134,11 @@
     <ClCompile Include="bibliotheque_cours\verification_allocation.cpp" />
     <ClCompile Include="Projet E2024.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Jeu.hpp" />
+    <ClInclude Include="MapJeu.hpp" />
+    <ClInclude Include="Piece.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

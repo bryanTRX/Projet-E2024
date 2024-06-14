@@ -29,7 +29,7 @@ public:
 
 		if (it != pieceVoisins_.end())
 		{
-			return it->second;
+			return it->second.lock();
 		}
 		return nullptr;
 	}
@@ -46,14 +46,17 @@ public:
 			if (direction == "N") directionComplete = "North (N)";
 			else if (direction == "E") directionComplete = "East (E)";
 			else if (direction == "S") directionComplete = "South (S)";
-			else if (direction == "O") directionComplete = "West (W)";
+			else if (direction == "W") directionComplete = "West (W)";
 
-			std::cout << voisins.second->getNom() << " is to the " << directionComplete << std::endl;
+			if (auto voisin = voisins.second.lock())
+			{
+				std::cout << "To the " << voisins.first << " there is " << voisin->getNom() << std::endl;
+			}
 		}
 	}
 
 private: 
 	std::string nom_;
 	std::string description_;
-	std::map<std::string, std::shared_ptr<Piece>> pieceVoisins_;
+	std::map<std::string, std::weak_ptr<Piece>> pieceVoisins_;
 };

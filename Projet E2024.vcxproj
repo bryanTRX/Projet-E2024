@@ -136,7 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jeu.hpp" />
-    <ClInclude Include="MapJeu.hpp" />
+    <ClInclude Include="Monde.hpp" />
+    <ClInclude Include="ObjetInteractif.hpp" />
     <ClInclude Include="Piece.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

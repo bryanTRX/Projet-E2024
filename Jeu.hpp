@@ -1,6 +1,6 @@
 ﻿#pragma once 
 
-#include "MapJeu.hpp"
+#include "Monde.hpp"
 #include <string>
 #include <iostream>
 
@@ -38,7 +38,7 @@ public:
     }
 
 private:
-    MapDuJeu map_;
+    Monde map_;
     std::shared_ptr<Piece> piecePresente_;
 
     void afficherBanniere() const
@@ -70,6 +70,16 @@ private:
             else
             {
                 std::cout << "Cannot go there." << std::endl;
+            }
+        }
+        else if (commande == "ladder")
+        {
+            auto pieceSuivante = piecePresente_->getPieceVoisin(commande);
+            
+            if (pieceSuivante)
+            {
+                piecePresente_ = pieceSuivante;
+                std::cout << "Taking " << commande << std::endl;
             }
         }
         else

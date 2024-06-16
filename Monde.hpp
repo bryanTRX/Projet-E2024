@@ -5,15 +5,15 @@
 #include <memory>
 #include <string>
 
-class MapDuJeu
+class Monde
 {
 public:
-    MapDuJeu()
+    Monde()
     {
         initialiser();
     }
 
-    ~MapDuJeu()
+    ~Monde()
     {
         pieces.clear();
     }
@@ -37,7 +37,8 @@ public:
     std::shared_ptr<Piece> getPieces(const std::string& nom) const
     {
         auto it = pieces.find(nom);
-        if (it != pieces.end()) {
+        if (it != pieces.end())
+        {
             return it->second;
         }
         return nullptr;
@@ -53,14 +54,17 @@ private:
         ajouterPiece("Living Room", "This is the living room. It has a cozy fireplace.");
         ajouterPiece("Kitchen", "This is the kitchen. It has a delicious smell.");
         ajouterPiece("Small Bedroom", "This is the small bedroom. It is not particularly clean or well organised. There is a small window.");
+        ajouterPiece("Attic", "The attic is a dusty, dimly lit space filled with the remnants of a bygone era.");
 
+        setVoisin("Entrance", "E", "Living Room");
+        setVoisin("Living Room", "W", "Entrance");
         setVoisin("Entrance", "N", "Main Hall");
         setVoisin("Main Hall", "S", "Entrance");
-        setVoisin("Main Hall", "E", "Living Room");
-        setVoisin("Living Room", "W", "Main Hall");
         setVoisin("Main Hall", "N", "Kitchen");
         setVoisin("Kitchen", "S", "Main Hall");
         setVoisin("Main Hall", "W", "Small Bedroom");
         setVoisin("Small Bedroom", "E", "Main Hall");
+        setVoisin("Small Bedroom", "ladder", "Attic");
+        setVoisin("Attic", "ladder", "Small Bedroom");
     }
 };

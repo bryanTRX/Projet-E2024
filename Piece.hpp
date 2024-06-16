@@ -50,7 +50,7 @@ public:
 
 			if (auto voisin = voisins.second.lock())
 			{
-				std::cout << "To the " << voisins.first << " there is " << voisin->getNom() << std::endl;
+				std::cout << "To the " << voisins.first << " there is " << voisin->getNom() << " " << directionComplete << std::endl;
 			}
 		}
 	}

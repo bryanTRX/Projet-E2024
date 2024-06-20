@@ -9,8 +9,7 @@
 class Jeu {
 public:
     Jeu() {
-        map_ = std::make_shared<Monde>();
-        piecePresente_ = map_->getPieces("Entrance");
+        piecePresente_ = map_.getPieces("Entrance");
         initialiserCommandes();
     }
 
@@ -21,11 +20,10 @@ public:
 
     void jouer() {
         afficherBanniere();
-        map_->affichageDesPieces();
         std::string commande;
 
         while (true) {
-            affichageDeLaPiecePresente();
+            piecePresente_->affichage();
             std::cout << "> ";
             std::getline(std::cin, commande);
             if (commande == "exit") {
@@ -37,7 +35,7 @@ public:
     }
 
 private:
-    std::shared_ptr<Monde> map_;
+    Monde map_;
     std::shared_ptr<Piece> piecePresente_;
     std::unordered_map<std::string, std::function<void(const std::string&)>> commandes_;
 
@@ -124,9 +122,9 @@ private:
                 std::cout << objet->utiliser() << std::endl;
                 if (auto cle = std::dynamic_pointer_cast<ObjetCle>(objet)) {
                     auto zoneADeverrouiller = cle->getZoneADeverrouiller();
-                    auto zone = map_->getPieces(zoneADeverrouiller);
+                    auto zone = map_.getPieces(zoneADeverrouiller);
                     if (zone) {
-                        piecePresente_->setVoisins("east", zone); // Assumed 'east'; change accordingly.
+                        piecePresente_->setVoisins("E", zone); // Assumed 'E' for East; change accordingly.
                         std::cout << "You unlocked the " << zoneADeverrouiller << "." << std::endl;
                     }
                 }
@@ -142,15 +140,10 @@ private:
         std::cout << "\033[1;34mType 'exit' to quit.\033[0m" << std::endl;
     }
 
-
     void affichageDeLaPiecePresente() const {
         if (piecePresente_) {
             std::cout << "\033[1;32m" << piecePresente_->getNom() << "\033[0m" << std::endl;
             std::cout << piecePresente_->getDescription() << std::endl;
         }
-    }
-
-    void delimiter() const {
-        std::cout << "\033[1;33m----------------------------------------\033[0m" << std::endl;
     }
 };

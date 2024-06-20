@@ -81,6 +81,4 @@ private:
             livingRoom->ajouterObjet(std::make_shared<ObjetCle>("Key", "A small rusty key.", "Salle R"));
         }
     }
-
-
 };

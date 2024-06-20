@@ -50,3 +50,13 @@ public:
 private:
     std::string zoneADeverrouiller_;
 };
+
+class ObjetPiano : public ObjetInteractif {
+public:
+    ObjetPiano(const std::string& nom, const std::string& description)
+        : ObjetInteractif(nom, description) {}
+
+    std::string utiliser() override {
+        return "You play a beautiful melody on the piano.";
+    }
+};

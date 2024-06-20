@@ -89,5 +89,12 @@ private:
         {
             salleR->ajouterObjet(std::make_shared<ObjetCle>("Ladder", "Test", "Attic"));
         }
+
+        auto attic = getPieces("Attic");
+
+        if (attic)
+        {
+            attic->ajouterObjet(std::make_shared<ObjetPiano>("Piano", "Alllliiii"));
+        }
     }
 };

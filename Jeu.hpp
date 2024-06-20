@@ -1,90 +1,156 @@
-﻿#pragma once 
+﻿#pragma once
 
 #include "Monde.hpp"
 #include <string>
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
-class Jeu
-{
+class Jeu {
 public:
-    Jeu()
-    {
-        piecePresente_ = map_.getPieces("Entrance");
+    Jeu() {
+        map_ = std::make_shared<Monde>();
+        piecePresente_ = map_->getPieces("Entrance");
+        initialiserCommandes();
     }
 
-    ~Jeu()
-    {
+    ~Jeu() {
         std::cout << "Cleaning up the game resources..." << std::endl;
-        piecePresente_.reset(); 
+        piecePresente_.reset();
     }
 
-    void jouer()
-    {
+    void jouer() {
         afficherBanniere();
+        map_->affichageDesPieces();
         std::string commande;
 
-        while (true)
-        {
+        while (true) {
             affichageDeLaPiecePresente();
             std::cout << "> ";
             std::getline(std::cin, commande);
-            if (commande == "exit")
-            {
-                std::cout << "Thank you for playing! Goodbye!" << std::endl;
+            if (commande == "exit") {
+                std::cout << "Thank you for playing!" << std::endl;
                 break;
             }
-            commandeDeMouvement(commande);
+            traiterCommande(commande);
         }
     }
 
 private:
-    Monde map_;
+    std::shared_ptr<Monde> map_;
     std::shared_ptr<Piece> piecePresente_;
+    std::unordered_map<std::string, std::function<void(const std::string&)>> commandes_;
 
-    void afficherBanniere() const
-    {
-        std::cout << ">>>>> INF1015 DUNGEON CRAWLER 2021 <<<<<" << std::endl;
-        std::cout << "> > > > GAME OF THE YEAR EDITION < < < <" << std::endl << std::endl;
+    void initialiserCommandes() {
+        commandes_["move"] = [this](const std::string& args) { deplacer(args); };
+        commandes_["look"] = [this](const std::string& args) { regarder(args); };
+        commandes_["take"] = [this](const std::string& args) { prendreObjet(args); };
+        commandes_["use"] = [this](const std::string& args) { utiliserObjet(args); };
+        commandes_["N"] = [this](const std::string& arg) { commandeDeMouvement("N"); };
+        commandes_["E"] = [this](const std::string& arg) { commandeDeMouvement("E"); };
+        commandes_["S"] = [this](const std::string& arg) { commandeDeMouvement("S"); };
+        commandes_["W"] = [this](const std::string& arg) { commandeDeMouvement("W"); };
     }
 
-    void affichageDeLaPiecePresente() const
-    {
-        piecePresente_->affichage();
+    void commandeDeMouvement(const std::string& direction) {
+        auto nouvellePiece = piecePresente_->getPieceVoisin(direction);
+        if (nouvellePiece) {
+            piecePresente_ = nouvellePiece;
+        }
+        else {
+            std::cout << "You can't go that way." << std::endl;
+        }
     }
 
-    void commandeDeMouvement(const std::string& commande)
-    {
-        if (commande == "look")
-        {
-            affichageDeLaPiecePresente();
-        }
-        else if (commande == "N" || commande == "E" || commande == "S" || commande == "W")
-        {
-            auto pieceSuivante = piecePresente_->getPieceVoisin(commande);
+    void traiterCommande(const std::string& input) {
+        auto pos = input.find(' ');
+        std::string commande = (pos == std::string::npos) ? input : input.substr(0, pos);
+        std::string args = (pos == std::string::npos) ? "" : input.substr(pos + 1);
 
-            if (pieceSuivante)
-            {
-                piecePresente_ = pieceSuivante;
-                std::cout << "Going " << commande << std::endl;
+        auto it = commandes_.find(commande);
+        if (it != commandes_.end()) {
+            it->second(args);
+        }
+        else {
+            std::cout << "Invalid command." << std::endl;
+        }
+    }
+
+    void deplacer(const std::string& direction) {
+        if (piecePresente_) {
+            auto nextPiece = piecePresente_->getPieceVoisin(direction);
+            if (nextPiece) {
+                piecePresente_ = nextPiece;
             }
-            else
-            {
-                std::cout << "Cannot go there." << std::endl;
+            else {
+                std::cout << "You can't move in that direction." << std::endl;
             }
         }
-        else if (commande == "ladder")
-        {
-            auto pieceSuivante = piecePresente_->getPieceVoisin(commande);
-            
-            if (pieceSuivante)
-            {
-                piecePresente_ = pieceSuivante;
-                std::cout << "Taking " << commande << std::endl;
+    }
+
+    void regarder(const std::string& args) {
+        if (piecePresente_) {
+            if (args.empty()) {
+                piecePresente_->affichage();
+            }
+            else {
+                auto objet = piecePresente_->getObjet(args);
+                if (objet) {
+                    std::cout << objet->getDescription() << std::endl;
+                }
+                else {
+                    std::cout << "There is no " << args << " here." << std::endl;
+                }
             }
         }
-        else
-        {
-            std::cout << "Unknown command." << std::endl;
+    }
+
+    void prendreObjet(const std::string& nomObjet) {
+        if (piecePresente_) {
+            auto objet = piecePresente_->retirerObjet(nomObjet);
+            if (objet) {
+                std::cout << "You picked up the " << nomObjet << "." << std::endl;
+            }
+            else {
+                std::cout << "There is no " << nomObjet << " here." << std::endl;
+            }
         }
+    }
+
+    void utiliserObjet(const std::string& nomObjet) {
+        if (piecePresente_) {
+            auto objet = piecePresente_->getObjet(nomObjet);
+            if (objet) {
+                std::cout << objet->utiliser() << std::endl;
+                if (auto cle = std::dynamic_pointer_cast<ObjetCle>(objet)) {
+                    auto zoneADeverrouiller = cle->getZoneADeverrouiller();
+                    auto zone = map_->getPieces(zoneADeverrouiller);
+                    if (zone) {
+                        piecePresente_->setVoisins("east", zone); // Assumed 'east'; change accordingly.
+                        std::cout << "You unlocked the " << zoneADeverrouiller << "." << std::endl;
+                    }
+                }
+            }
+            else {
+                std::cout << "You don't have a " << nomObjet << " to use." << std::endl;
+            }
+        }
+    }
+
+    void afficherBanniere() {
+        std::cout << "\033[1;34mWelcome to the interactive adventure game!\033[0m" << std::endl;
+        std::cout << "\033[1;34mType 'exit' to quit.\033[0m" << std::endl;
+    }
+
+
+    void affichageDeLaPiecePresente() const {
+        if (piecePresente_) {
+            std::cout << "\033[1;32m" << piecePresente_->getNom() << "\033[0m" << std::endl;
+            std::cout << piecePresente_->getDescription() << std::endl;
+        }
+    }
+
+    void delimiter() const {
+        std::cout << "\033[1;33m----------------------------------------\033[0m" << std::endl;
     }
 };

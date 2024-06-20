@@ -1,57 +1,47 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <memory>
 #include <iostream>
 
-class ObjetInteractif
-{
+class ObjetInteractif {
 public:
-    ObjetInteractif(const std::string& nom, const std::string& description) : nom_(nom), description_(description) {}
-
-    virtual ~ObjetInteractif() = default;
+    ObjetInteractif(const std::string& nom, const std::string& description)
+        : nom_(nom), description_(description) {}
+    virtual ~ObjetInteractif() {}
 
     std::string getNom() const { return nom_; }
     std::string getDescription() const { return description_; }
+    virtual std::string utiliser() = 0;
+    std::vector<std::string> motsClefs;
 
-    virtual void utiliser() const
-    {
-        std::cout << "You use the " << nom_ << ". " << std::endl;
-    }
-
-private:
+protected:
     std::string nom_;
     std::string description_;
 };
 
-class ObjetDeverrouillage : public ObjetInteractif
-{
+class ObjetCle : public ObjetInteractif {
 public:
-    ObjetDeverrouillage(const std::string& nom, const std::string& description, const std::string& zoneDeverrouillee)
-        : ObjetInteractif(nom, description), zoneDeverrouillee_(zoneDeverrouillee) {}
+    ObjetCle(const std::string& nom, const std::string& description, const std::string& zoneADeverrouiller)
+        : ObjetInteractif(nom, description), zoneADeverrouiller_(zoneADeverrouiller) {}
 
-    std::string getZoneDeverrouillee() const { return zoneDeverrouillee_; }
-
-    void utiliser() const override
-    {
-        std::cout << "You use the " << getNom() << " to unlock " << zoneDeverrouillee_ << "." << std::endl;
+    std::string utiliser() override {
+        return "La clé a été utilisée pour déverrouiller " + zoneADeverrouiller_;
     }
 
+    std::string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
+
 private:
-    std::string zoneDeverrouillee_;
+    std::string zoneADeverrouiller_;
 };
-class Echelle : public ObjetInteractif
-{
+
+class ObjetEchelle : public ObjetInteractif {
 public:
-    Echelle(const std::string& nom, const std::string& description, const std::string& zoneCible)
-        : ObjetInteractif(nom, description), zoneCible_(zoneCible) {}
+    ObjetEchelle(const std::string& nom, const std::string& description)
+        : ObjetInteractif(nom, description) {}
 
-    std::string getZoneCible() const { return zoneCible_; }
-
-    void utiliser() const override
-    {
-        std::cout << "You use the " << getNom() << " to go to " << zoneCible_ << "." << std::endl;
+    std::string utiliser() override {
+        return "Vous utilisez l'échelle pour accéder à une nouvelle zone.";
     }
-
-private:
-    std::string zoneCible_;
 };

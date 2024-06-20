@@ -38,10 +38,15 @@ private:
 
 class ObjetEchelle : public ObjetInteractif {
 public:
-    ObjetEchelle(const std::string& nom, const std::string& description)
-        : ObjetInteractif(nom, description) {}
+    ObjetEchelle(const std::string& nom, const std::string& description, const std::string& zoneADeverrouiller)
+        : ObjetInteractif(nom, description), zoneADeverrouiller_(zoneADeverrouiller) {}
 
     std::string utiliser() override {
-        return "Vous utilisez l'échelle pour accéder à une nouvelle zone.";
+        return "Vous utilisez l'échelle pour accéder à une nouvelle zone." + zoneADeverrouiller_;
     }
+
+    std::string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
+
+private:
+    std::string zoneADeverrouiller_;
 };

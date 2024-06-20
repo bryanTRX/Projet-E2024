@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Jeu.hpp
+
+#pragma once
 
 #include "Monde.hpp"
 #include <string>
@@ -38,9 +40,9 @@ private:
     Monde map_;
     std::shared_ptr<Piece> piecePresente_;
     std::unordered_map<std::string, std::function<void(const std::string&)>> commandes_;
+    std::vector<std::shared_ptr<ObjetInteractif>> objetsJoueur_;
 
     void initialiserCommandes() {
-        commandes_["move"] = [this](const std::string& args) { deplacer(args); };
         commandes_["look"] = [this](const std::string& args) { regarder(args); };
         commandes_["take"] = [this](const std::string& args) { prendreObjet(args); };
         commandes_["use"] = [this](const std::string& args) { utiliserObjet(args); };
@@ -74,18 +76,6 @@ private:
         }
     }
 
-    void deplacer(const std::string& direction) {
-        if (piecePresente_) {
-            auto nextPiece = piecePresente_->getPieceVoisin(direction);
-            if (nextPiece) {
-                piecePresente_ = nextPiece;
-            }
-            else {
-                std::cout << "You can't move in that direction." << std::endl;
-            }
-        }
-    }
-
     void regarder(const std::string& args) {
         if (piecePresente_) {
             if (args.empty()) {
@@ -93,6 +83,14 @@ private:
             }
             else {
                 auto objet = piecePresente_->getObjet(args);
+                if (!objet) {
+                    for (const auto& obj : objetsJoueur_) {
+                        if (obj->getNom().find(args) != std::string::npos) {
+                            objet = obj;
+                            break;
+                        }
+                    }
+                }
                 if (objet) {
                     std::cout << objet->getDescription() << std::endl;
                 }
@@ -107,6 +105,7 @@ private:
         if (piecePresente_) {
             auto objet = piecePresente_->retirerObjet(nomObjet);
             if (objet) {
+                objetsJoueur_.push_back(objet);
                 std::cout << "You picked up the " << nomObjet << "." << std::endl;
             }
             else {
@@ -116,34 +115,49 @@ private:
     }
 
     void utiliserObjet(const std::string& nomObjet) {
-        if (piecePresente_) {
-            auto objet = piecePresente_->getObjet(nomObjet);
-            if (objet) {
-                std::cout << objet->utiliser() << std::endl;
-                if (auto cle = std::dynamic_pointer_cast<ObjetCle>(objet)) {
-                    auto zoneADeverrouiller = cle->getZoneADeverrouiller();
-                    auto zone = map_.getPieces(zoneADeverrouiller);
-                    if (zone) {
-                        piecePresente_->setVoisins("E", zone); // Assumed 'E' for East; change accordingly.
-                        std::cout << "You unlocked the " << zoneADeverrouiller << "." << std::endl;
-                    }
+        std::shared_ptr<ObjetInteractif> objet;
+        for (const auto& obj : objetsJoueur_) {
+            if (obj->getNom().find(nomObjet) != std::string::npos) {
+                objet = obj;
+                break;
+            }
+        }
+        if (!objet) {
+            objet = piecePresente_->getObjet(nomObjet);
+        }
+        if (objet) {
+            std::cout << objet->utiliser() << std::endl;
+            if (auto cle = std::dynamic_pointer_cast<ObjetCle>(objet)) {
+                auto zoneADeverrouiller = cle->getZoneADeverrouiller();
+                auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
+                if (pieceADeverrouiller) {
+                    piecePresente_->setVoisins("E", pieceADeverrouiller); // Ajout d'une nouvelle piÃ¨ce au nord pour l'exemple
+                    std::cout << "The " << zoneADeverrouiller << " has been unlocked!" << std::endl;
                 }
             }
-            else {
-                std::cout << "You don't have a " << nomObjet << " to use." << std::endl;
+        }
+        else if (objet)
+        {
+            std::cout << objet->utiliser() << std::endl;
+            if (auto echeclle = std::dynamic_pointer_cast<ObjetEchelle>(objet))
+            {
+                auto zoneADeverrouiller = echeclle->getZoneADeverrouiller();
+                auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
+                if (pieceADeverrouiller)
+                {
+                    piecePresente_->setVoisins("N", pieceADeverrouiller); // Ajout d'une nouvelle piÃ¨ce au nord pour l'exemple
+                    std::cout << "The " << zoneADeverrouiller << " has been unlocked!" << std::endl;
+                }
             }
+        }
+
+        else {
+            std::cout << "You don't have the " << nomObjet << "." << std::endl;
         }
     }
 
     void afficherBanniere() {
-        std::cout << "\033[1;34mWelcome to the interactive adventure game!\033[0m" << std::endl;
-        std::cout << "\033[1;34mType 'exit' to quit.\033[0m" << std::endl;
-    }
-
-    void affichageDeLaPiecePresente() const {
-        if (piecePresente_) {
-            std::cout << "\033[1;32m" << piecePresente_->getNom() << "\033[0m" << std::endl;
-            std::cout << piecePresente_->getDescription() << std::endl;
-        }
+        std::cout << "Welcome to the interactive text-based adventure game!" << std::endl;
+        std::cout << "Type 'exit' to quit the game." << std::endl;
     }
 };

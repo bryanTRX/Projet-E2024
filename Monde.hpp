@@ -1,5 +1,3 @@
-// Monde.hpp
-
 #pragma once
 
 #include "Piece.hpp"
@@ -8,40 +6,32 @@
 #include <memory>
 #include <string>
 
-class Monde
-{
+class Monde {
 public:
-    Monde()
-    {
+    Monde() {
         initialiser();
     }
 
-    ~Monde()
-    {
+    ~Monde() {
         pieces.clear();
     }
 
-    void ajouterPiece(const std::string& nom, const std::string& description)
-    {
+    void ajouterPiece(const std::string& nom, const std::string& description) {
         pieces[nom] = std::make_shared<Piece>(nom, description);
     }
 
-    void setVoisin(const std::string& precedant, const std::string& direction, const std::string& suivante)
-    {
+    void setVoisin(const std::string& precedant, const std::string& direction, const std::string& suivante) {
         auto piecePrecedante = pieces.find(precedant);
         auto pieceSuivante = pieces.find(suivante);
 
-        if (piecePrecedante != pieces.end() && pieceSuivante != pieces.end())
-        {
+        if (piecePrecedante != pieces.end() && pieceSuivante != pieces.end()) {
             piecePrecedante->second->setVoisins(direction, pieceSuivante->second);
         }
     }
 
-    std::shared_ptr<Piece> getPieces(const std::string& nom) const
-    {
+    std::shared_ptr<Piece> getPieces(const std::string& nom) const {
         auto it = pieces.find(nom);
-        if (it != pieces.end())
-        {
+        if (it != pieces.end()) {
             return it->second;
         }
         return nullptr;
@@ -57,8 +47,7 @@ public:
 private:
     std::unordered_map<std::string, std::shared_ptr<Piece>> pieces;
 
-    void initialiser()
-    {
+    void initialiser() {
         ajouterPiece("Entrance", "This is the entrance of the house. There is a sturdy carpet on the floor.");
         ajouterPiece("Main Hall", "This is the main hallway. There is a bunch of boxes against the wall.");
         ajouterPiece("Living Room", "This is the living room. It has a cozy fireplace.");
@@ -80,21 +69,13 @@ private:
         // Adding interactive objects to rooms
         auto livingRoom = getPieces("Living Room");
         if (livingRoom) {
-            livingRoom->ajouterObjet(std::make_shared<ObjetCle>("Key", "A small rusty key.", "Salle R"));
+            livingRoom->ajouterObjet(std::make_shared<ObjetCle>("Key", "A small brass key.", "Salle R"));
+            livingRoom->ajouterObjet(std::make_shared<ObjetPiano>("Piano", "An old grand piano."));
         }
 
-        auto salleR = getPieces("Salle R");
-
-        if (salleR)
-        {
-            salleR->ajouterObjet(std::make_shared<ObjetCle>("Ladder", "Test", "Attic"));
-        }
-
-        auto attic = getPieces("Attic");
-
-        if (attic)
-        {
-            attic->ajouterObjet(std::make_shared<ObjetPiano>("Piano", "Alllliiii"));
+        auto smallBedroom = getPieces("Small Bedroom");
+        if (smallBedroom) {
+            smallBedroom->ajouterObjet(std::make_shared<ObjetEchelle>("Echelle", "A sturdy wooden ladder.", "Attic"));
         }
     }
 };

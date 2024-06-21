@@ -14,7 +14,6 @@ public:
     std::string getNom() const { return nom_; }
     std::string getDescription() const { return description_; }
     virtual std::string utiliser() = 0;
-    std::vector<std::string> motsClefs;
 
 protected:
     std::string nom_;
@@ -42,7 +41,7 @@ public:
         : ObjetInteractif(nom, description), zoneADeverrouiller_(zoneADeverrouiller) {}
 
     std::string utiliser() override {
-        return "Vous utilisez l'échelle pour accéder à une nouvelle zone." + zoneADeverrouiller_;
+        return "Vous utilisez l'échelle pour accéder à " + zoneADeverrouiller_;
     }
 
     std::string getZoneADeverrouiller() const { return zoneADeverrouiller_; }

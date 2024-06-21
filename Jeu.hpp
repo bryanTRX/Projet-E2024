@@ -131,26 +131,20 @@ private:
                 auto zoneADeverrouiller = cle->getZoneADeverrouiller();
                 auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
                 if (pieceADeverrouiller) {
-                    piecePresente_->setVoisins("E", pieceADeverrouiller); // Ajout d'une nouvelle piÃ¨ce au nord pour l'exemple
+                    piecePresente_->setVoisins("E", pieceADeverrouiller); // Ajout d'une nouvelle pièce à l'est pour l'exemple
                     std::cout << "The " << zoneADeverrouiller << " has been unlocked!" << std::endl;
                 }
             }
-        }
-        else if (objet)
-        {
-            std::cout << objet->utiliser() << std::endl;
-            if (auto echeclle = std::dynamic_pointer_cast<ObjetEchelle>(objet))
-            {
-                auto zoneADeverrouiller = echeclle->getZoneADeverrouiller();
+            else if (auto echelle = std::dynamic_pointer_cast<ObjetEchelle>(objet)) {
+                auto zoneADeverrouiller = echelle->getZoneADeverrouiller();
                 auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
-                if (pieceADeverrouiller)
-                {
-                    piecePresente_->setVoisins("N", pieceADeverrouiller); // Ajout d'une nouvelle piÃ¨ce au nord pour l'exemple
-                    std::cout << "The " << zoneADeverrouiller << " has been unlocked!" << std::endl;
+                if (pieceADeverrouiller) {
+                    std::string direction = piecePresente_->getNom() == "Attic" ? "down" : "up";
+                    std::cout << "Going " << direction << " with the ladder." << std::endl;
+                    piecePresente_->setVoisins(direction == "up" ? "N" : "S", pieceADeverrouiller);
                 }
             }
         }
-
         else {
             std::cout << "You don't have the " << nomObjet << "." << std::endl;
         }

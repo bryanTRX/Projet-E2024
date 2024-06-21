@@ -75,7 +75,7 @@ private:
 
         auto smallBedroom = getPieces("Small Bedroom");
         if (smallBedroom) {
-            smallBedroom->ajouterObjet(std::make_shared<ObjetEchelle>("Echelle", "A sturdy wooden ladder.", "Attic"));
+            smallBedroom->ajouterObjet(std::make_shared<ObjetEchelle>("Ladder", "A sturdy wooden ladder.", "Attic"));
         }
     }
 };

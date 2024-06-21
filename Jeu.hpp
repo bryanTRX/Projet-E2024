@@ -80,6 +80,7 @@ private:
         if (piecePresente_) {
             if (args.empty()) {
                 piecePresente_->affichage();
+                afficherObjetsJoueur();
             }
             else {
                 auto objet = piecePresente_->getObjet(args);
@@ -153,5 +154,12 @@ private:
     void afficherBanniere() {
         std::cout << "Welcome to the interactive text-based adventure game!" << std::endl;
         std::cout << "Type 'exit' to quit the game." << std::endl;
+    }
+
+    void afficherObjetsJoueur() {
+        std::cout << "You have :" << std::endl;
+        for (const auto& obj : objetsJoueur_) {
+            std::cout << "  " << obj->getNom() << std::endl;
+        }
     }
 };

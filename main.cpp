@@ -1,4 +1,4 @@
-// Programme contenant le projet du TD5.
+// Programme contenant le projet.
 // file		main.cpp
 // author	Iliass Khider et Bryan Alexandre Tavares
 // date		4 mai 2024

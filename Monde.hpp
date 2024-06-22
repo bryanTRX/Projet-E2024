@@ -6,60 +6,57 @@
 #include <memory>
 #include <string>
 
+using namespace std;
 
 // La classe Monde représente le monde du jeu, avec ses différentes pièces et objets.
-class Monde {
+class Monde 
+{
 public:
+    // Constructeurs ------------------------------------------------------------------------------------------------------------------------------------
+
     // Constructeur
-    Monde() {
-        initialiser();
-    }
+    Monde() { initialiser(); }
+
+    // Destructeurs -------------------------------------------------------------------------------------------------------------------------------------
 
     // Destructeur
-    ~Monde() {
-        pieces.clear();
-    }
+    ~Monde() { pieces.clear(); }
+
+    // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
 
     // Méthode pour ajouter une nouvelle pièce au monde. Prend en paramètre le nom et la description de la pièce.
-    void ajouterPiece(const std::string& nom, const std::string& description) {
-        pieces[nom] = std::make_shared<Piece>(nom, description);
-    }
+    void ajouterPiece(const string& nom, const string& description) { pieces[nom] = make_shared<Piece>(nom, description); }
 
     // Méthode pour définir une pièce voisine. Prend en paramètre le nom de la pièce actuelle, la direction, et le nom de la pièce voisine.
    
-    void setVoisin(const std::string& precedant, const std::string& direction, const std::string& suivante) {
+    void setVoisin(const string& precedant, const string& direction, const string& suivante) 
+    {
         auto piecePrecedante = pieces.find(precedant);
         auto pieceSuivante = pieces.find(suivante);
 
        
-        if (piecePrecedante != pieces.end() && pieceSuivante != pieces.end()) {
+        if (piecePrecedante != pieces.end() && pieceSuivante != pieces.end())
+        {
             piecePrecedante->second->setVoisins(direction, pieceSuivante->second);
         }
     }
 
     // Méthode pour obtenir une pièce à partir de son nom. Retourne un pointeur vers la pièce, ou nullptr si la pièce n'existe pas.
-    std::shared_ptr<Piece> getPieces(const std::string& nom) const {
+    shared_ptr<Piece> getPieces(const string& nom) const 
+    {
         auto it = pieces.find(nom);
-        if (it != pieces.end()) {
+        if (it != pieces.end())
+        {
             return it->second;
         }
         return nullptr;
     }
 
-    // Méthode pour afficher toutes les pièces disponibles.
-    void affichageDesPieces() const {
-        std::cout << "\033[1;34mAvailable Rooms:\033[0m" << std::endl;
-        for (const auto& pair : pieces) {
-            std::cout << "- " << pair.first << std::endl;
-        }
-    }
-
 private:
-    
-    std::unordered_map<std::string, std::shared_ptr<Piece>> pieces;
+    unordered_map<string, shared_ptr<Piece>> pieces;
 
-    
-    void initialiser() {
+    void initialiser()
+    {
         ajouterPiece("Entrance", "This is the entrance of the house. There is a sturdy carpet on the floor.");
         ajouterPiece("Main Hall", "This is the main hallway. There is a bunch of boxes against the wall.");
         ajouterPiece("Living Room", "This is the living room. It has a cozy fireplace.");
@@ -77,17 +74,20 @@ private:
         setVoisin("Main Hall", "W", "Small Bedroom");
         setVoisin("Small Bedroom", "E", "Main Hall");
         setVoisin("R Room", "W", "Main Hall");
+        setVoisin("Attic", "S", "Small Bedroom");
 
         // Ajout d'objets interactifs dans certaines pièces
         auto livingRoom = getPieces("Living Room");
-        if (livingRoom) {
-            livingRoom->ajouterObjet(std::make_shared<ObjetCle>("Key", "A small brass key that can be used in the main Hallway.", "R Room", "Main Hall"));
-            livingRoom->ajouterObjet(std::make_shared<ObjetPiano>("Piano", "An old grand piano.", "Living Room"));
+        if (livingRoom)
+        {
+            livingRoom->ajouterObjet(make_shared<ObjetCle>("Key", "A small brass key that can be used in the main Hallway.", "R Room", "Main Hall"));
+            livingRoom->ajouterObjet(make_shared<ObjetPiano>("Piano", "An old grand piano.", "Attic"));
         }
 
         auto smallBedroom = getPieces("Small Bedroom");
-        if (smallBedroom) {
-            smallBedroom->ajouterObjet(std::make_shared<ObjetEchelle>("Ladder", "A sturdy wooden ladder that can be used in the Small Bedroom.", "Attic","Small Bedroom"));
+        if (smallBedroom)
+        {
+            smallBedroom->ajouterObjet(make_shared<ObjetEchelle>("Ladder", "A sturdy wooden ladder that can be used in the Small Bedroom.", "Attic", "Small Bedroom"));
         }
     }
 };

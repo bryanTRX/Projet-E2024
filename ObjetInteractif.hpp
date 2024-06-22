@@ -5,81 +5,93 @@
 #include <memory>
 #include <iostream>
 
-// Classe pour les objets interactifs
-class ObjetInteractif {
-public:
-   
-    ObjetInteractif(const std::string& nom, const std::string& description, const std::string& pieceUtilisable)
-        : nom_(nom), description_(description), pieceUtilisable_(pieceUtilisable) {}
+using namespace std;
 
-   
+// Classe pour les objets interactifs
+class ObjetInteractif 
+{
+public:
+    // Constructeurs ------------------------------------------------------------------------------------------------------------------------------------
+
+    ObjetInteractif(const string& nom, const string& description, const string& pieceUtilisable) : nom_(nom), description_(description), pieceUtilisable_(pieceUtilisable) {}
+
+    // Destructeurs -------------------------------------------------------------------------------------------------------------------------------------
+
     virtual ~ObjetInteractif() {}
 
+    // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
+
     // Méthode pour obtenir le nom de l'objet
-    std::string getNom() const { return nom_; }
+    string getNom() const { return nom_; }
 
     // Méthode pour obtenir la description de l'objet
-    std::string getDescription() const { return description_; }
+    string getDescription() const { return description_; }
 
     // Methode pour obtenir la piece ou l'objet sera utilisable
-    std::string getPieceUtilisable() const { return pieceUtilisable_; }
+    string getPieceUtilisable() const { return pieceUtilisable_; }
 
     // Méthode virtuelle pure pour utiliser l'objet
-    virtual std::string utiliser() = 0;
+    virtual string utiliser() = 0;
 
 protected:
-    std::string nom_; 
-    std::string description_; 
-    std::string pieceUtilisable_;
+    string nom_; 
+    string description_; 
+    string pieceUtilisable_;
 };
 
 // Classe dérivée pour les objets de type clé
-class ObjetCle : public ObjetInteractif {
+class ObjetCle : public ObjetInteractif
+{
 public:
+    // Constructeurs ------------------------------------------------------------------------------------------------------------------------------------
+
     // Constructeur prenant un nom, une description, la zone à déverrouiller et dans quelle piece elle est activable 
-    ObjetCle(const std::string& nom, const std::string& description, const std::string& zoneADeverrouiller, const std::string& pieceUtilisable)
-        : ObjetInteractif(nom, description, pieceUtilisable), zoneADeverrouiller_(zoneADeverrouiller) {}
+    ObjetCle(const string& nom, const string& description, const string& zoneADeverrouiller, const string& pieceUtilisable) : ObjetInteractif(nom, description, pieceUtilisable), zoneADeverrouiller_(zoneADeverrouiller) {}
+
+    // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
 
     // Implémentation de la méthode utiliser pour l'objet clé
-    std::string utiliser() override {
-        return "The key was used to unlock " + zoneADeverrouiller_;
-    }
+    string utiliser() override { return "The key was used to unlock " + zoneADeverrouiller_; }
 
     // Méthode pour obtenir la zone à déverrouiller
-    std::string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
+    string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
 
 private:
-    std::string zoneADeverrouiller_; 
+    string zoneADeverrouiller_; 
 };
 
 // Classe dérivée pour les objets de type échelle
-class ObjetEchelle : public ObjetInteractif {
+class ObjetEchelle : public ObjetInteractif
+{
 public:
+    // Constructeurs ------------------------------------------------------------------------------------------------------------------------------------
+
     // Constructeur prenant un nom, une description, la zone à déverrouiller et dans quelle piece elle est activable 
-    ObjetEchelle(const std::string& nom, const std::string& description, const std::string& zoneADeverrouiller, const std::string& pieceUtilisable)
-        : ObjetInteractif(nom, description, pieceUtilisable), zoneADeverrouiller_(zoneADeverrouiller) {}
+    ObjetEchelle(const string& nom, const string& description, const string& zoneADeverrouiller, const string& pieceUtilisable) : ObjetInteractif(nom, description, pieceUtilisable), zoneADeverrouiller_(zoneADeverrouiller) {}
+
+    // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
 
     // Implémentation de la méthode utiliser pour l'objet échelle
-    std::string utiliser() override {
-        return "You use the ladder to access the " + zoneADeverrouiller_;
-    }
+    string utiliser() override { return "You use the ladder to access the " + zoneADeverrouiller_; }
 
     // Méthode pour obtenir la zone à accéder
-    std::string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
+    string getZoneADeverrouiller() const { return zoneADeverrouiller_; }
 
 private:
-    std::string zoneADeverrouiller_; 
+    string zoneADeverrouiller_; 
 };
 
 // Classe dérivée pour les objets de type piano
-class ObjetPiano : public ObjetInteractif {
+class ObjetPiano : public ObjetInteractif
+{
 public:
-    // Constructeur prenant un nom, une description, la zone à déverrouiller et dans quelle piece elle est activable 
-    ObjetPiano(const std::string& nom, const std::string& description, const std::string& pieceUtilisable)
-        : ObjetInteractif(nom, description, pieceUtilisable) {}
+    // Constructeurs ------------------------------------------------------------------------------------------------------------------------------------
 
+    // Constructeur prenant un nom, une description, la zone à déverrouiller et dans quelle piece elle est activable 
+    ObjetPiano(const string& nom, const string& description, const string& pieceUtilisable) : ObjetInteractif(nom, description, pieceUtilisable) {}
+
+    // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
+    
     // Implémentation de la méthode utiliser pour l'objet piano
-    std::string utiliser() override {
-        return "You play a beautiful melody on the piano.";
-    }
+    string utiliser() override { return "You play a beautiful melody on the piano."; }
 };

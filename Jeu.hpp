@@ -8,31 +8,38 @@
 #include <unordered_map>
 #include <functional>   
 
+using namespace std;
+
 // La classe Jeu représente le jeu principal.
-class Jeu {
+class Jeu
+{
 public:
     // Constructeur initialisant le jeu et définissant la pièce présente à l'entrée.
-    Jeu() {
+    Jeu() 
+    {
         piecePresente_ = map_.getPieces("Entrance");
         initialiserCommandes();
     }
 
     // Destructeur du jeu, libérant les ressources utilisées.
-    ~Jeu() {
-        std::cout << "Cleaning up the game resources..." << std::endl;
+    ~Jeu()
+    {
+        cout << "Cleaning up the game resources..." << endl;
         piecePresente_.reset();
     }
 
     // Méthode principale pour jouer au jeu.Elle affiche la bannière de bienvenue, les informations de la pièce présente et traite la commande entrée par l'utilisateur.
-    void jouer() {
+    void jouer() 
+    {
         afficherBanniere(); 
-        std::string commande;
-        while (true) {
+        string commande;
+        while (true)
+        {
             piecePresente_->affichage();  
-            std::cout << "> ";
-            std::getline(std::cin, commande);
+            cout << "> ";
+            getline(cin, commande);
             if (commande == "exit") {
-                std::cout << "Thank you for playing!" << std::endl;
+                cout << "Thank you for playing!" << endl;
                 break;  
             }
             traiterCommande(commande);  
@@ -41,142 +48,202 @@ public:
 
 private:
     Monde map_;  
-    std::shared_ptr<Piece> piecePresente_;  // Pièce où le joueur se trouve actuellement.
-    std::unordered_map<std::string, std::function<void(const std::string&)>> commandes_;  // Commandes du jeu.
-    std::vector<std::shared_ptr<ObjetInteractif>> objetsJoueur_;  // Objets que le joueur possède.
+    shared_ptr<Piece> piecePresente_;  // Pièce où le joueur se trouve actuellement.
+    unordered_map<string, function<void(const string&)>> commandes_;  // Commandes du jeu.
+    vector<shared_ptr<ObjetInteractif>> objetsJoueur_;  // Objets que le joueur possède.
 
     // Initialise les commandes disponibles dans le jeu.
-    void initialiserCommandes() {
-        commandes_["look"] = [this](const std::string& args) { regarder(args); };
-        commandes_["take"] = [this](const std::string& args) { prendreObjet(args); };
-        commandes_["use"] = [this](const std::string& args) { utiliserObjet(args); };
-        commandes_["N"] = [this](const std::string& arg) { commandeDeMouvement("N"); };
-        commandes_["E"] = [this](const std::string& arg) { commandeDeMouvement("E"); };
-        commandes_["S"] = [this](const std::string& arg) { commandeDeMouvement("S"); };
-        commandes_["W"] = [this](const std::string& arg) { commandeDeMouvement("W"); };
+    void initialiserCommandes()
+    {
+        commandes_["look"] = [this](const string& args) { regarder(args); };
+        commandes_["take"] = [this](const string& args) { prendreObjet(args); };
+        commandes_["use"] = [this](const string& args) { utiliserObjet(args); };
+        commandes_["N"] = [this](const string arg) { commandeDeMouvement("N"); };
+        commandes_["E"] = [this](const string arg) { commandeDeMouvement("E"); };
+        commandes_["S"] = [this](const string arg) { commandeDeMouvement("S"); };
+        commandes_["W"] = [this](const string arg) { commandeDeMouvement("W"); };
     }
 
     // Traite une commande de mouvement dans une direction spécifiée.
-    void commandeDeMouvement(const std::string& direction) {
+    void commandeDeMouvement(const string& direction)
+    {
         auto nouvellePiece = piecePresente_->getPieceVoisin(direction);
-        if (nouvellePiece) {
+
+        if (nouvellePiece) 
+        {
             piecePresente_ = nouvellePiece;
         }
-        else {
-            std::cout << "You can't go that way." << std::endl;
+
+        else
+        {
+            cout << "You can't go that way." << endl;
         }
     }
 
     // Traite les commandes entrées par l'utilisateur.
-    void traiterCommande(const std::string& input) {
+    void traiterCommande(const string& input) 
+    {
         auto pos = input.find(' ');
-        std::string commande = (pos == std::string::npos) ? input : input.substr(0, pos);
-        std::string args = (pos == std::string::npos) ? "" : input.substr(pos + 1);
+        string commande = (pos == string::npos) ? input : input.substr(0, pos);
+        string args = (pos == string::npos) ? "" : input.substr(pos + 1);
 
         auto it = commandes_.find(commande);
-        if (it != commandes_.end()) {
+
+        if (it != commandes_.end()) 
+        {
             it->second(args);
         }
-        else {
-            std::cout << "Invalid command." << std::endl;
+
+        else
+        {
+            cout << "Invalid command." << endl;
         }
     }
 
     // Affiche les informations sur la pièce actuelle ou sur un objet spécifique.
-    void regarder(const std::string& args) {
-        if (piecePresente_) {
-            if (args.empty()) {
+    void regarder(const string& args)
+    {
+        if (piecePresente_) 
+        {
+            if (args.empty()) 
+            {
                 piecePresente_->affichage();
                 afficherObjetsJoueur();
             }
-            else {
+
+            else 
+            {
                 auto objet = piecePresente_->getObjet(args);
-                if (!objet) {
-                    for (const auto& obj : objetsJoueur_) {
-                        if (obj->getNom().find(args) != std::string::npos) {
+
+                if (!objet) 
+                {
+                    for (const auto& obj : objetsJoueur_) 
+                    {
+                        if (obj->getNom().find(args) != string::npos) 
+                        {
                             objet = obj;
                             break;
                         }
                     }
                 }
-                if (objet) {
-                    std::cout << objet->getDescription() << std::endl;
+
+                if (objet) 
+                {
+                    cout << objet->getDescription() << endl;
                 }
-                else {
-                    std::cout << "There is no " << args << " here." << std::endl;
+
+                else 
+                {
+                    cout << "There is no " << args << " here." << endl;
                 }
             }
         }
     }
 
     // Permet au joueur de prendre un objet dans la pièce actuelle.
-    void prendreObjet(const std::string& nomObjet) {
-        if (piecePresente_) {
+    void prendreObjet(const string& nomObjet) 
+    {
+        if (piecePresente_)
+        {
             auto objet = piecePresente_->retirerObjet(nomObjet);
-            if (objet) {
+
+            if (objet)
+            {
                 objetsJoueur_.push_back(objet);
-                std::cout << "You picked up the " << nomObjet << "." << std::endl;
+                cout << "You picked up the " << nomObjet << "." << endl;
             }
-            else {
-                std::cout << "There is no " << nomObjet << " here." << std::endl;
+
+            else 
+            {
+                cout << "There is no " << nomObjet << " here." << endl;
             }
         }
     }
 
     // Permet au joueur d'utiliser un objet qu'il possède ou qui se trouve dans la pièce actuelle.
-    void utiliserObjet(const std::string& nomObjet) {
-        std::shared_ptr<ObjetInteractif> objet;
-        for (const auto& obj : objetsJoueur_) {
-            if (obj->getNom().find(nomObjet) != std::string::npos) {
+    void utiliserObjet(const string& nomObjet) 
+    {
+        shared_ptr<ObjetInteractif> objet;
+
+        for (const auto& obj : objetsJoueur_)
+        {
+            if (obj->getNom().find(nomObjet) != string::npos)
+            {
                 objet = obj;
                 break;
             }
         }
-        if (!objet) {
+
+        if (!objet) 
+        {
             objet = piecePresente_->getObjet(nomObjet);
         }
-        if (objet) {
-            if (piecePresente_->getNom() == objet->getPieceUtilisable()) {
-                std::cout << objet->utiliser() << std::endl;
-                if (auto cle = std::dynamic_pointer_cast<ObjetCle>(objet)) {
+
+        if (objet) 
+        {
+            if (piecePresente_->getNom() == objet->getPieceUtilisable())
+            {
+                cout << objet->utiliser() << endl;
+
+                if (auto cle = dynamic_pointer_cast<ObjetCle>(objet))
+                {
                     auto zoneADeverrouiller = cle->getZoneADeverrouiller();
+
                     auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
-                    if (pieceADeverrouiller) {
+                    if (pieceADeverrouiller) 
+                    {
                         piecePresente_->setVoisins("E", pieceADeverrouiller);
-                        std::cout << "The " << zoneADeverrouiller << " has been unlocked!" << std::endl;
+                        cout << "The " << zoneADeverrouiller << " has been unlocked!" << endl;
                     }
                 }
-                else if (auto echelle = std::dynamic_pointer_cast<ObjetEchelle>(objet)) {
+                else if (auto echelle = dynamic_pointer_cast<ObjetEchelle>(objet))
+                {
                     auto zoneADeverrouiller = echelle->getZoneADeverrouiller();
                     auto pieceADeverrouiller = map_.getPieces(zoneADeverrouiller);
-                    if (pieceADeverrouiller) {
-                        std::string direction = piecePresente_->getNom() == "Attic" ? "down" : "up";
-                        std::cout << "Going " << direction << " with the ladder." << std::endl;
+
+                    if (pieceADeverrouiller) 
+                    {
+                        string direction = piecePresente_->getNom() == "Attic" ? "down" : "up";
+                        cout << "Going " << direction << " with the ladder." << endl;
                         piecePresente_->setVoisins(direction == "up" ? "N" : "S", pieceADeverrouiller);
                     }
                 }
             }
-            else {
-                std::cout << "You can't use the " << nomObjet << " here." << std::endl;
+            else 
+            {
+                cout << "You can't use the " << nomObjet << " here." << endl;
             }
         }
-        else {
-            std::cout << "You don't have the " << nomObjet << "." << std::endl;
+        else 
+        {
+            cout << "You don't have the " << nomObjet << "." << endl;
         }
     }
 
-
     // Affiche la bannière de bienvenue du jeu.
-    void afficherBanniere() {
-        std::cout << "Welcome to the interactive text-based adventure game!" << std::endl;
-        std::cout << "Type 'exit' to quit the game." << std::endl;
+    void afficherBanniere()
+    {
+        cout << "\033[1;32mWelcome to the interactive text-based adventure game!\033[0m" << endl;
+        cout << "\033[1;34mVoici les commandes de déplacement disponibles :\033[0m" << endl;
+        cout << "\033[1;33m - N (North) : Pour aller au nord (En haut)"
+            << "\n - E (East) : Pour aller à l'est (À droite)"
+            << "\n - S (South) : Pour aller au sud (En bas)"
+            << "\n - W (West) : Pour aller à l'ouest (À gauche)\033[0m" << endl;
+        cout << "\033[1;34mVoici les commandes interactives durant le jeu :\033[0m" << endl;
+        cout << "\033[1;33m - look : Pour regarder les salles accessibles."
+            << "\n - look (nom de l'objet) : Pour regarder la description de l'objet."
+            << "\n - take (nom de l'objet) : Pour prendre l'objet à votre disposition."
+            << "\n - use (nom de l'objet) : Pour utiliser un objet à votre disposition.\033[0m" << endl;
+        cout << "\033[1;31mVoici la commande pour sortir du jeu : 'exit'.\033[0m" << endl;
     }
 
     // Affiche les objets que le joueur possède.
-    void afficherObjetsJoueur() {
-        std::cout << "You have:" << std::endl;
-        for (const auto& obj : objetsJoueur_) {
-            std::cout << "  " << obj->getNom() << std::endl;
+    void afficherObjetsJoueur()
+    {
+        cout << "You have:" << endl;
+        for (const auto& obj : objetsJoueur_) 
+        {
+            cout << "  " << obj->getNom() << endl;
         }
     }
 };

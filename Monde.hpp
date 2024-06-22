@@ -81,7 +81,7 @@ private:
         if (livingRoom)
         {
             livingRoom->ajouterObjet(make_shared<ObjetCle>("Key", "A small brass key that can be used in the main Hallway.", "R Room", "Main Hall"));
-            livingRoom->ajouterObjet(make_shared<ObjetPiano>("Piano", "An old grand piano.", "Attic"));
+            livingRoom->ajouterObjet(make_shared<ObjetPiano>("Piano", "An old grand piano that can be used in the Attic.", "Attic"));
         }
 
         auto smallBedroom = getPieces("Small Bedroom");

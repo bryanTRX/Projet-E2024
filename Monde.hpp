@@ -20,24 +20,23 @@ public:
     // Destructeurs -------------------------------------------------------------------------------------------------------------------------------------
 
     // Destructeur
-    ~Monde() { pieces.clear(); }
+    ~Monde() = default;
 
     // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
 
-    // Méthode pour ajouter une nouvelle pièce au monde. Prend en paramètre le nom et la description de la pièce.
-    void ajouterPiece(const string& nom, const string& description) { pieces[nom] = make_shared<Piece>(nom, description); }
-
-    // Méthode pour définir une pièce voisine. Prend en paramètre le nom de la pièce actuelle, la direction, et le nom de la pièce voisine.
-   
-    void setVoisin(const string& precedant, const string& direction, const string& suivante) 
+    void setVoisin(const string& piece, const std::initializer_list<std::pair<string, string>>& voisins) 
     {
-        auto piecePrecedante = pieces.find(precedant);
-        auto pieceSuivante = pieces.find(suivante);
-
-       
-        if (piecePrecedante != pieces.end() && pieceSuivante != pieces.end())
+        auto pieceIt = pieces.find(piece);
+        if (pieceIt != pieces.end()) 
         {
-            piecePrecedante->second->setVoisins(direction, pieceSuivante->second);
+            for (const auto& voisin : voisins) 
+            {
+                auto voisinIt = pieces.find(voisin.second);
+                if (voisinIt != pieces.end())
+                {
+                    pieceIt->second->setVoisins(voisin.first, voisinIt->second);
+                }
+            }
         }
     }
 
@@ -57,24 +56,23 @@ private:
 
     void initialiser()
     {
-        ajouterPiece("Entrance", "This is the entrance of the house. There is a sturdy carpet on the floor.");
-        ajouterPiece("Main Hall", "This is the main hallway. There is a bunch of boxes against the wall.");
-        ajouterPiece("Living Room", "This is the living room. It has a cozy fireplace.");
-        ajouterPiece("Kitchen", "This is the kitchen. It has a delicious smell.");
-        ajouterPiece("Small Bedroom", "This is the small bedroom. It is not particularly clean or well organised. There is a small window.There is something hanging on the ceiling that seems unreachable");
-        ajouterPiece("Attic", "The attic is a dusty, dimly lit space filled with the remnants of a bygone era.");
-        ajouterPiece("R Room", "This is the hidden room, revealed only by using a special key. ");
+        pieces["Entrance"] = std::make_shared<Piece>("Entrance", "You are at the entrance of the house.");
+        pieces["Living Room"] = std::make_shared<Piece>("Living Room", "You are in the living room.");
+        pieces["Main Hall"] = std::make_shared<Piece>("Main Hall", "You are in the main hallway.");
+        pieces["Kitchen"] = std::make_shared<Piece>("Kitchen", "You are in the kitchen.");
+        pieces["Small Bedroom"] = std::make_shared<Piece>("Small Bedroom", "You are in a small bedroom.");
+        pieces["R Room"] = std::make_shared<Piece>("R Room", "You are in the R room.");
+        pieces["Attic"] = std::make_shared<Piece>("Attic", "You are in the attic.");
 
-        setVoisin("Entrance", "E", "Living Room");
-        setVoisin("Living Room", "W", "Entrance");
-        setVoisin("Entrance", "N", "Main Hall");
-        setVoisin("Main Hall", "S", "Entrance");
-        setVoisin("Main Hall", "N", "Kitchen");
-        setVoisin("Kitchen", "S", "Main Hall");
-        setVoisin("Main Hall", "W", "Small Bedroom");
-        setVoisin("Small Bedroom", "E", "Main Hall");
-        setVoisin("R Room", "W", "Main Hall");
-        setVoisin("Attic", "S", "Small Bedroom");
+        // Utilisation de la méthode setVoisin pour configurer plusieurs voisins à la fois
+        setVoisin("Entrance", { {"E", "Living Room"}, {"N", "Main Hall"} });
+        setVoisin("Living Room", { {"W", "Entrance"} });
+        setVoisin("Main Hall", { {"S", "Entrance"}, {"N", "Kitchen"}, {"W", "Small Bedroom"} });
+        setVoisin("Kitchen", { {"S", "Main Hall"} });
+        setVoisin("Small Bedroom", { {"E", "Main Hall"}});
+        setVoisin("R Room", { {"W", "Main Hall"} });
+        setVoisin("Attic", { {"S", "Small Bedroom"} });
+
 
         // Ajout d'objets interactifs dans certaines pièces
         auto livingRoom = getPieces("Living Room");

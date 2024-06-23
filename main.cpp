@@ -1,8 +1,8 @@
 // Programme contenant le projet.
 // file		main.cpp
 // author	Iliass Khider et Bryan Alexandre Tavares
-// date		4 mai 2024
-// Créé le	10 mai 2024
+// date		4 juin 2024
+// Créé le	28 juin 2024
 
 #include "Jeu.hpp"
 #include <fstream>

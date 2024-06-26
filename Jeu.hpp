@@ -3,9 +3,6 @@
 #pragma once
 
 #include "Monde.hpp"
-#include <string>
-#include <iostream>
-#include <unordered_map>
 #include <functional>   
 
 using namespace std;
@@ -25,7 +22,6 @@ public:
     ~Jeu()
     {
         cout << "Cleaning up the game resources..." << endl;
-        piecePresente_.reset();
     }
 
     // Méthode principale pour jouer au jeu.Elle affiche la bannière de bienvenue, les informations de la pièce présente et traite la commande entrée par l'utilisateur.
@@ -38,7 +34,8 @@ public:
             piecePresente_->affichage();  
             cout << "> ";
             getline(cin, commande);
-            if (commande == "exit") {
+            if (commande == "exit") 
+            {
                 cout << "Thank you for playing!" << endl;
                 break;  
             }

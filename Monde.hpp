@@ -1,10 +1,7 @@
 #pragma once
 
 #include "Piece.hpp"
-#include "ObjetInteractif.hpp"
 #include <unordered_map>
-#include <memory>
-#include <string>
 
 using namespace std;
 
@@ -24,7 +21,7 @@ public:
 
     // Méthodes -----------------------------------------------------------------------------------------------------------------------------------------
 
-    void setVoisin(const string& piece, const std::initializer_list<std::pair<string, string>>& voisins) 
+    void setVoisin(const string& piece, const initializer_list<pair<string, string>>& voisins) 
     {
         auto pieceIt = pieces.find(piece);
         if (pieceIt != pieces.end()) 
@@ -56,13 +53,13 @@ private:
 
     void initialiser()
     {
-        pieces["Entrance"] = std::make_shared<Piece>("Entrance", "You are at the entrance of the house.");
-        pieces["Living Room"] = std::make_shared<Piece>("Living Room", "You are in the living room.");
-        pieces["Main Hall"] = std::make_shared<Piece>("Main Hall", "You are in the main hallway.");
-        pieces["Kitchen"] = std::make_shared<Piece>("Kitchen", "You are in the kitchen.");
-        pieces["Small Bedroom"] = std::make_shared<Piece>("Small Bedroom", "You are in a small bedroom.");
-        pieces["R Room"] = std::make_shared<Piece>("R Room", "You are in the R room.");
-        pieces["Attic"] = std::make_shared<Piece>("Attic", "You are in the attic.");
+        pieces["Entrance"] = make_shared<Piece>("Entrance", "You are at the entrance of the house.");
+        pieces["Living Room"] = make_shared<Piece>("Living Room", "You are in the living room.");
+        pieces["Main Hall"] = make_shared<Piece>("Main Hall", "You are in the main hallway.");
+        pieces["Kitchen"] = make_shared<Piece>("Kitchen", "You are in the kitchen.");
+        pieces["Small Bedroom"] = make_shared<Piece>("Small Bedroom", "You are in a small bedroom.");
+        pieces["R Room"] = make_shared<Piece>("R Room", "You are in the R room.");
+        pieces["Attic"] = make_shared<Piece>("Attic", "You are in the attic.");
 
         // Utilisation de la méthode setVoisin pour configurer plusieurs voisins à la fois
         setVoisin("Entrance", { {"E", "Living Room"}, {"N", "Main Hall"} });
@@ -78,14 +75,15 @@ private:
         auto livingRoom = getPieces("Living Room");
         if (livingRoom)
         {
-            livingRoom->ajouterObjet(make_shared<ObjetCle>("Key", "A small brass key that can be used in the main Hallway.", "R Room", "Main Hall"));
-            livingRoom->ajouterObjet(make_shared<ObjetPiano>("Piano", "An old grand piano that can be used in the Attic.", "Attic"));
+            livingRoom->ajouterObjet(make_shared<ObjetCle>("Key", "\033[31mA small brass key that can be used in the main Hallway.\033[0m", "R Room", "Main Hall"));
+            livingRoom->ajouterObjet(make_shared<ObjetPiano>("Piano", "\033[31mAn old grand piano that can be used in the Attic.\033[0m", "Attic"));
         }
+
 
         auto smallBedroom = getPieces("Small Bedroom");
         if (smallBedroom)
         {
-            smallBedroom->ajouterObjet(make_shared<ObjetEchelle>("Ladder", "A sturdy wooden ladder that can be used in the Small Bedroom.", "Attic", "Small Bedroom"));
+            smallBedroom->ajouterObjet(make_shared<ObjetEchelle>("Ladder", "\033[31mA sturdy wooden ladder that can be used in the Small Bedroom.\033[0m", "Attic", "Small Bedroom"));
         }
     }
 };
